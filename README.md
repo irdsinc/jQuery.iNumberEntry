@@ -99,7 +99,7 @@ numberParts | array | [] (**Required**) | The array of NumberPart's that combine
 
 ## Examples
 ```javascript
-$("#Name").iNumberEntry({
+$("#iNumberEntry").iNumberEntry({
   numberParts:[
     {
       length:3,
