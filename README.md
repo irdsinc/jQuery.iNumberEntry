@@ -2,6 +2,17 @@
 A customizable number entry plugin for jQuery.
 
 ## Configuration
+```javascript
+$("#iNumberEntry").iNumberEntry(NumberEntry);
+```
+
+### NumberEntry
+
+Name | Type | Defaults | Description
+:--- | :--- | :--- | :---
+linked | bool | false | If true, the numeric value will be linked to the previous numeric value, which will adjust depending on "minValue" and "maxValue". For example, a date entry of 12/01 will become 11/30 when decreasing the day part.
+numberParts | array | [] (**Required**) | The array of NumberPart's that combine to create the full numeric entry.
+
 ### NumberPart
 
 Name | Type | Defaults | Description
@@ -90,13 +101,6 @@ value | string | "" | The numeric value. If the value is less digits than "lengt
   </tr>
 </table>-->
 
-### NumberEntry
-
-Name | Type | Defaults | Description
-:--- | :--- | :--- | :---
-linked | bool | false | If true, the numeric value will be linked to the previous numeric value, which will adjust depending on "minValue" and "maxValue". For example, a date entry of 12/01 will become 11/30 when decreasing the day part.
-numberParts | array | [] (**Required**) | The array of NumberPart's that combine to create the full numeric entry.
-
 ## Examples
 ```javascript
 $("#iNumberEntry").iNumberEntry({
@@ -122,9 +126,9 @@ $("#iNumberEntry").iNumberEntry({
 ### Predefined Number Entries
 #### iPhoneNumberEntry
 ```javascript
-$("#iPhoneNumberEntry").iPhoneNumberEntry();
+$("#iPhoneNumberEntry").iPhoneNumberEntry([NumberEntry]);
 ```
-You can supply additional options as well. By default, this will display (123) 456-7890. If you wish to change any of the prefixes or postfixes, you would need to supply the following to get a display of 123 456 7890:
+By default, this will display (123) 456-7890. If you wish to change any of the prefixes or postfixes, you would need to supply the following to get a display of 123 456 7890:
 ```javascript
 $("#iPhoneNumberEntry").iPhoneNumberEntry({
   numberParts: [
@@ -141,7 +145,7 @@ $("#iPhoneNumberEntry").iPhoneNumberEntry({
 The last part can be ignored if no changes are being made, however, any previous parts would need to be supplied with a empty object notation, i.e. '{}', if the last part is being changed.
 #### iDateNumberEntry
 ```javascript
-$("#iDateNumberEntry").iDateNumberEntry("mm/dd");
+$("#iDateNumberEntry").iDateNumberEntry(format, [NumberEntry]);
 ```
 The first parameter is the format. The supported formats are as follows:
 
@@ -157,7 +161,7 @@ Month/Day/Year
 You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
 #### iTimeNumberEntry
 ```javascript
-$("#iTimeNumberEntry").iTimeNumberEntry("hh:mm:ss");
+$("#iTimeNumberEntry").iTimeNumberEntry(format, [NumberEntry]);
 ```
 The first parameter is the format. The supported formats are as follows:
 
