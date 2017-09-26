@@ -542,7 +542,7 @@
 				data = $this.data("iNumberEntry");
 
 			if (!data) {
-				$this.data("iNumberEntry", new NumberEntry(this, $.extend({}, defaults, options, $this.data())));
+				$this.data("iNumberEntry", new NumberEntry(this, $.extend(true, {}, defaults, options, $this.data())));
 			}
 		});
 	};
@@ -552,7 +552,7 @@
 	"use strict";
 
 	$.fn.iPhoneNumberEntry = function (options) {
-		$(this).iNumberEntry($.extend({},
+		$(this).iNumberEntry($.extend(true, {},
 	        {
 	        	numberParts: [
 	                {
@@ -652,7 +652,7 @@
 			}
 		}
 
-		$(this).iNumberEntry($.extend({}, defaults, options));
+		$(this).iNumberEntry($.extend(true, {}, defaults, options));
 	};
 
 	$.fn.iTimeNumberEntry = function (format, options) {
@@ -707,6 +707,8 @@
 			}
 		}
 
-		$(this).iNumberEntry($.extend({}, defaults, options));
+		$(this).iNumberEntry($.extend(true, {}, defaults, options));
 	};
+
+	// TODO: consider how to make currency extension with commas when value is thousands+ and a non determined length
 })(jQuery);
