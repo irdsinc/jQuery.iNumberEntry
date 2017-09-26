@@ -1,5 +1,5 @@
 ﻿/*!
- * jQuery iNumberEntry Plugin v1.1.0 (http://flashjs.org)
+ * jQuery iNumberEntry Plugin v1.1.0 (https://github.com/irdsinc/jQuery.iNumberEntry)
  * Copyright IRDS, Inc. - http://irdsinc.com
  * License: MIT (http://www.opensource.org/licenses/mit-license.php)
  */
