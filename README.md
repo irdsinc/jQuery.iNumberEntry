@@ -104,21 +104,21 @@ value | string | "" | The numeric value. If the value is less digits than "lengt
 ## Examples
 ```javascript
 $("#iNumberEntry").iNumberEntry({
-  numberParts:[
+  numberParts: [
     {
-      length:3,
-      prefix:"(",
-      postfix:") ",
-      value:"123"
+      length: 3,
+      prefix: "(",
+      postfix: ") ",
+      value: "123"
     },
     {
-      length:3,
-      postfix:"-",
-      value:"456"
+      length: 3,
+      postfix: "-",
+      value: "456"
     },
     {
-      length:4,
-      value:"7890"
+      length: 4,
+      value: "7890"
     }
   ]
 });
@@ -168,7 +168,7 @@ You can supply additional options as well in the second parameter, same as above
 ```javascript
 $("#iSocialSecurityNumberEntry").iSocialSecurityNumberEntry([NumberEntry]);
 ```
-By default, this will display in the format 123-45-6789. You can supply additional options as well in the second parameter, same as above for iSocialSecurityNumberEntry.
+By default, this will display in the format 123-45-6789. You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
 ## Events
 ```javascript
 $("#iNumberEntry").iNumberEntry().on("change.iNumberEntry", function(e) {
