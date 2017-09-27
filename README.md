@@ -128,7 +128,7 @@ $("#iNumberEntry").iNumberEntry({
 ```javascript
 $("#iPhoneNumberEntry").iPhoneNumberEntry([NumberEntry]);
 ```
-By default, this will display (123) 456-7890. If you wish to change any of the prefixes or postfixes, you would need to supply the following to get a display of 123 456 7890:
+By default, this will display in the format (123) 456-7890. If you wish to change any of the prefixes or postfixes, you would need to supply the following to get a display of 123 456 7890:
 ```javascript
 $("#iPhoneNumberEntry").iPhoneNumberEntry({
   numberParts: [
@@ -149,14 +149,9 @@ $("#iDateNumberEntry").iDateNumberEntry(format, [NumberEntry]);
 ```
 The first parameter is the format. The supported formats are as follows:
 
-Month/Day
-- m or mm
-- d or dd
-
-Month/Day/Year
-- m or mm
-- d or dd
-- yy or yyyy
+- mm/dd
+- mm/dd/yy
+- mm/dd/yyyy
 
 You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
 #### iTimeNumberEntry
@@ -165,16 +160,15 @@ $("#iTimeNumberEntry").iTimeNumberEntry(format, [NumberEntry]);
 ```
 The first parameter is the format. The supported formats are as follows:
 
-Hours/Minutes
-- h or hh
-- m or mm
-
-Hours/Minutes/Seconds
-- h or hh
-- m or mm
-- s or ss
+- hh:mm
+- hh:mm:ss
 
 You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
+#### iSocialSecurityNumberEntry
+```javascript
+$("#iSocialSecurityNumberEntry").iSocialSecurityNumberEntry([NumberEntry]);
+```
+By default, this will display in the format 123-45-6789. You can supply additional options as well in the second parameter, same as above for iSocialSecurityNumberEntry.
 ## Events
 ```javascript
 $("#iNumberEntry").iNumberEntry().on('change.iNumberEntry', function(e) {
