@@ -171,7 +171,7 @@ $("#iSocialSecurityNumberEntry").iSocialSecurityNumberEntry([NumberEntry]);
 By default, this will display in the format 123-45-6789. You can supply additional options as well in the second parameter, same as above for iSocialSecurityNumberEntry.
 ## Events
 ```javascript
-$("#iNumberEntry").iNumberEntry().on('change.iNumberEntry', function(e) {
+$("#iNumberEntry").iNumberEntry().on("change.iNumberEntry", function(e) {
   console.log("The display value is " + e.value.displayValue);
   
   for (var i = 0; i < e.value.parts.length; i++)
