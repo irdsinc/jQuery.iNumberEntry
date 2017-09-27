@@ -14,20 +14,21 @@
         	var self = this;
 
         	self.length = options.length;
-        	self.maxValue = options.maxValue || Math.min(Number.MAX_SAFE_INTEGER, Math.pow(10, options.length) - 1);
+        	self.maxValue = options.maxValue || /*options.length
+                ? */Math.min(Number.MAX_SAFE_INTEGER, Math.pow(10, options.length) - 1)
+        	/*: Number.MAX_SAFE_INTEGER*/;
         	self.minValue = options.minValue || 0;//Number.MIN_SAFE_INTEGER;
         	self.prefix = options.prefix || "";
         	self.postfix = options.postfix || "";
         	self.snapToStep = options.snapToStep || false;
         	self.step = options.step || 1;
         	self.toString = function () {
-        		return self.prefix + self.value.padStart(this.length, "0") + self.postfix;
+        		return self.prefix +
+	                (/*self.length ? */self.value.padStart(self.length, "0")/* : self.value.length*/) +
+	                self.postfix;
         	};
         	self.totalLength = function () {
-        		//console.log("prefix:" + this.prefix.length);
-        		//console.log("length:" + this.length);
-        		//console.log("postfix:" + this.postfix.length);
-        		return self.prefix.length + self.length + self.postfix.length;
+        		return self.prefix.length + (self.length/* || self.value.length*/) + self.postfix.length;
         	};
         	self.value = options.value || "";
 
@@ -56,7 +57,7 @@
         		for (var i = 0; i < self.numberParts.length; i++) {
         			var part = self.numberParts[i];
 
-        			length += part.length;
+        			length += part.length || part.value.length;
         		}
 
         		return length;
@@ -127,7 +128,7 @@
 			self.$element.val("");
 		},
 		decreaseValue: function (index) {
-		    var self = this,
+			var self = this,
 		        part = self.numberParts[index >= 0 ? index : self._highlightedPart],
 		        minValue = typeof part.minValue === "function" ? part.minValue(self.numberParts) : part.minValue,
 		        numericValue = parseInt(part.value, 10);
@@ -210,7 +211,7 @@
 				if (position > currentLength + part.totalLength()) {
 					currentLength += part.totalLength();
 				} else {
-					self.setSelectionRange($input, i, currentLength + part.prefix.length, part.length);
+					self.setSelectionRange($input, i, currentLength + part.prefix.length, part.length/* || part.value.length*/);
 
 					break;
 				}
@@ -366,11 +367,11 @@
 						self.setSelectionRange($input,
 					        i + 1,
 					        currentLength + part.totalLength() + nextPart.prefix.length,
-					        nextPart.length);
+					        nextPart.length/* || nextPart.value.length*/);
 					} else {
 						nextPart = self.numberParts[0];
 
-						self.setSelectionRange($input, 0, nextPart.prefix.length, nextPart.length);
+						self.setSelectionRange($input, 0, nextPart.prefix.length, nextPart.length/* || nextPart.value.length*/);
 					}
 
 					break;
@@ -388,7 +389,7 @@
 				if (index > i) {
 					currentLength += part.totalLength();
 				} else {
-					self.setSelectionRange($input, index, currentLength + part.prefix.length, part.length);
+					self.setSelectionRange($input, index, currentLength + part.prefix.length, part.length/* || part.value.length*/);
 
 					break;
 				}
@@ -413,11 +414,14 @@
 						self.setSelectionRange($input,
 					        self.numberParts.length - 1,
 					        self.$element.val().length - previousPart.totalLength() + previousPart.prefix.length,
-				            previousPart.length);
+				            previousPart.length/* || previousPart.value.length*/);
 					} else {
 						previousPart = self.numberParts[i];
 
-						self.setSelectionRange($input, i, currentLength + previousPart.prefix.length, previousPart.length);
+						self.setSelectionRange($input,
+					        i,
+					        currentLength + previousPart.prefix.length,
+					        previousPart.length/* || previousPart.value.length*/);
 					}
 
 					break;
@@ -425,7 +429,7 @@
 			}
 		},
 		increaseValue: function (index) {
-		    var self = this,
+			var self = this,
 		        part = self.numberParts[index >= 0 ? index : self._highlightedPart],
 		        maxValue = typeof part.maxValue === "function" ? part.maxValue(self.numberParts) : part.maxValue,
 		        numericValue = parseInt(part.value, 10);
@@ -464,10 +468,10 @@
 			value = value.replace(/[^0-9]/g, "");
 
 			for (var i = 0; i < self.numberParts.length; i++) {
-			    var part = self.numberParts[i],
+				var part = self.numberParts[i],
 			        maxValue = typeof part.maxValue === "function" ? part.maxValue(self.numberParts) : part.maxValue,
 			        minValue = typeof part.minValue === "function" ? part.minValue(self.numberParts) : part.minValue,
-			        newValue = parseInt(value.slice(0, part.length), 10);
+			        newValue = parseInt(value.slice(0, part.length/* || part.value.length*/), 10);
 
 				if (isNaN(newValue)) {
 					newValue = minValue;
@@ -486,10 +490,10 @@
 
 				part.value = newValue.toString();
 
-				value = value.slice(part.length);
+				value = value.slice(part.length/* || part.value.length*/);
 			}
 
-			this.update();
+			self.update();
 		},
 		setSelectionRange: function ($input, highlightedPart, startIndex, partLength) {
 			var self = this;
@@ -551,27 +555,6 @@
 (function ($) {
 	"use strict";
 
-	$.fn.iPhoneNumberEntry = function (options) {
-		$(this).iNumberEntry($.extend(true, {},
-	        {
-	        	numberParts: [
-	                {
-	                	length: 3,
-	                	prefix: "(",
-	                	postfix: ") "
-	                },
-	                {
-	                	length: 3,
-	                	postfix: "-"
-	                },
-	                {
-	                	length: 4
-	                }
-	        	]
-	        },
-	        options));
-	};
-
 	$.fn.iDateNumberEntry = function (format, options) {
 		var defaults = {
 			linked: true,
@@ -588,8 +571,8 @@
 
 		function getDaysInMonth(month) {
 			var year = (new Date()).getFullYear(),
-				days = getDaysInMonthYear(month, year),
-				daysToAdd = month === 2 && !isLeapYear(year) ? 1 : 0; // For February in case current year is not a leap year
+                days = getDaysInMonthYear(month, year),
+                daysToAdd = month === 2 && !isLeapYear(year) ? 1 : 0; // For February in case current year is not a leap year
 
 			return days + daysToAdd;
 		}
@@ -631,14 +614,14 @@
 
 				if (part.indexOf("m") >= 0) {
 					defaults.numberParts.push({
-						length: part.length,
+						length: 2,//part.length,
 						maxValue: 12,
 						minValue: 1,
 						postfix: i + 1 < formatArray.length ? "/" : ""
 					});
 				} else if (part.indexOf("d") >= 0) {
 					defaults.numberParts.push({
-						length: part.length,
+						length: 2,//part.length,
 						maxValue: getMaxDaysInMonth,
 						minValue: 1,
 						postfix: i + 1 < formatArray.length ? "/" : ""
@@ -653,6 +636,50 @@
 		}
 
 		$(this).iNumberEntry($.extend(true, {}, defaults, options));
+	};
+
+	$.fn.iPhoneNumberEntry = function (options) {
+		$(this).iNumberEntry($.extend(true, {},
+	        {
+	        	numberParts: [
+	                {
+	                	length: 3,
+	                	prefix: "(",
+	                	postfix: ") "
+	                },
+	                {
+	                	length: 3,
+	                	postfix: "-"
+	                },
+	                {
+	                	length: 4
+	                }
+	        	]
+	        },
+	        options));
+	};
+
+	$.fn.iSocialSecurityNumberEntry = function (options) {
+		$(this).iNumberEntry($.extend(true, {},
+            {
+            	numberParts: [
+                    {
+                    	length: 3,
+                    	minValue: 1,
+                    	postfix: "-"
+                    },
+                    {
+                    	length: 2,
+                    	minValue: 1,
+                    	postfix: "-"
+                    },
+                    {
+                    	length: 4,
+                    	minValue: 1
+                    }
+            	]
+            },
+            options));
 	};
 
 	$.fn.iTimeNumberEntry = function (format, options) {
@@ -686,20 +713,20 @@
 
 				if (part.indexOf("h") >= 0) {
 					defaults.numberParts.push({
-						length: part.length,
+						length: 2,//part.length,
 						maxValue: 23,
 						postfix: i + 1 < formatArray.length ? ":" : ""
 					});
 				} else if (part.indexOf("m") >= 0) {
 					defaults.numberParts.push({
-						length: part.length,
+						length: 2,//part.length,
 						maxValue: 59,
 						postfix: i + 1 < formatArray.length ? ":" : "",
 						step: 15
 					});
 				} else if (part.indexOf("s") >= 0) {
 					defaults.numberParts.push({
-						length: part.length,
+						length: 2,//part.length,
 						maxValue: 59,
 						step: 15
 					});
@@ -709,6 +736,4 @@
 
 		$(this).iNumberEntry($.extend(true, {}, defaults, options));
 	};
-
-	// TODO: consider how to make currency extension with commas when value is thousands+ and a non determined length
 })(jQuery);
