@@ -77,6 +77,7 @@
 	NumberEntry.prototype = {
 		_highlightedPart: null,
 		_isFocus: false,
+        _originalValue: null,
 
 		_init: function () {
 			var self = this;
@@ -163,6 +164,7 @@
 			$input.setSelectionRange(0, 0);
 
 			self._highlightedPart = null;
+		    self._originalValue = null;
 			//self._isFocus = false;
 			self.updateFromElementValue();
 		},
@@ -192,6 +194,7 @@
 			var self = this;
 
 			self._isFocus = true;
+		    self._originalValue = self.$element.val();
 
 			self.eventHighlightPart();
 
@@ -232,38 +235,49 @@
 			}
 
 			switch (e.which) {
-				case 9: // tab
-					if (e.shiftKey) {
-						if (self._highlightedPart === 0) {
-							break;
-						}
+			    case 9: // tab
+			        self.updateFromElementValue();
 
-						self.highlightPreviousPart();
-					} else {
-						if (self._highlightedPart === self.numberParts.length - 1) {
-							break;
-						}
+			        if (self.$element.val() !== "") {
+			            if (!self._originalValue || self._originalValue === "") {
+			                self.eventHighlightPart();
 
-						self.highlightNextPart();
-					}
+			                self._originalValue = self.$element.val();
+                        } else if (e.shiftKey) {
+			                if (self._highlightedPart === 0) {
+			                    break;
+			                }
 
-					e.preventDefault();
+			                self.highlightPreviousPart();
+			            } else {
+			                if (self._highlightedPart === self.numberParts.length - 1) {
+			                    break;
+			                }
 
-					self.updateFromElementValue();
+			                self.highlightNextPart();
+			            }
+
+			            e.preventDefault();
+			        }
 
 					break;
 				case 27: // esc
-					e.preventDefault();
-
-					self.updateFromElementValue();
-					self.eventHighlightPart();
+				    self.setValues(self._originalValue);
+				    self.highlightPart(self._highlightedPart);
 
 					break;
 				case 37: // left arrow
 					e.preventDefault();
 
 					self.updateFromElementValue();
-					self.highlightPreviousPart();
+
+				    if (!self._originalValue || self._originalValue === "") {
+				        self.eventHighlightPart();
+
+				        self._originalValue = self.$element.val();
+				    } else {
+				        self.highlightPreviousPart();
+				    }
 
 					break;
 				case 38: // up arrow
@@ -278,7 +292,14 @@
 					e.preventDefault();
 
 					self.updateFromElementValue();
-					self.highlightNextPart();
+
+				    if (!self._originalValue || self._originalValue === "") {
+				        self.eventHighlightPart();
+
+				        self._originalValue = self.$element.val();
+				    } else {
+				        self.highlightNextPart();
+				    }
 
 					break;
 				case 40: // down arrow
