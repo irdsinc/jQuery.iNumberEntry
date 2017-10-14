@@ -38,6 +38,7 @@
         	var self = this;
 
         	self.$element = $(element);
+            self.defaultValue = options.defaultValue || null;
         	self.linked = options.linked || false;
         	self.numberParts = [];
         	/*self.totalLength = function () {
@@ -97,7 +98,17 @@
 				"paste.iNumberEntry": $.proxy(self.eventPaste, self)
 			});
 
-			self.update();
+			if (self.$element.val()) {
+			    self.updateFromElementValue();
+			} else if (self.defaultValue) {
+			    self.setValues(self.defaultValue);
+			} else {
+			    var displayValue = self.getDisplayValue();
+
+                if (displayValue.length > 0) {
+                    self.update();
+                }
+			}
 		},
 		changeToNearestStep: function (value, part) {
 			var self = this,
