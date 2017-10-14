@@ -26,7 +26,7 @@ snapToStep | bool | false | If true, setting the numeric value will snap it to t
 step | int | 1 | The numeric unit to increase/decrease the numeric value.
 toString | function | | Function that returns the formatted numeric input including the "prefix" and "postfix".
 totalLength | function | | Function that returns the total length of the numeric value including the "prefix" and "postfix".
-value | string | "" | The numeric value. If the value is less digits than "length", the display value will be prepadded with 0's to equal the specified length. For example, if the length is 4 and the value is "12", then the display value will be "0012".
+value | string | "" | The numeric value. If the value is less digits than "length", the display value will be prepadded with 0's to equal the specified length. For example, if the length is 4 and the value is "12", then the display value will be "0012"<br/><br/>NOTE: For initial display, all NumberPart values must be supplied, otherwise, the NumberEntry display value will default to empty.
 <!--<table>
   <tr>
     <th>Name</th>
