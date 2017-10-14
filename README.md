@@ -10,23 +10,24 @@ $("#iNumberEntry").iNumberEntry(NumberEntry);
 
 Name | Type | Defaults | Description
 :--- | :--- | :--- | :---
-linked | bool | false | If true, the numeric value will be linked to the previous numeric value, which will adjust depending on "minValue" and "maxValue". For example, a date entry of 12/01 will become 11/30 when decreasing the day part.
-numberParts | array | [] (**Required**) | The array of NumberPart's that combine to create the full numeric entry.
+linked | bool | false | If true, the NumberPart "value" will be linked to the previous NumberPart "value", which will adjust depending on "minValue" and "maxValue". For example, a date entry of 12/01 will become 11/30 when decreasing the day part.
+defaultValue | string | null | The default value to display. This is one of two ways to set an initial display value. The other is by assigning NumberPart values, detailed below in the NumberPart section. This value takes precedence over individual NumberPart values.<br/><br/>NOTE: If a prefilled value exists prior to plugin initialization, "defaultValue" and NumberPart values will be ignored.
+numberParts | array | [] (**Required**) | The array of NumberParts that combine to create the full numeric entry.
 
 ### NumberPart
 
 Name | Type | Defaults | Description
 :--- | :--- | :--- | :---
 length | int | null (**Required**) | The length of the numeric input.
-maxValue | int<hr/>function | 10^length - 1 or Number.MAX_SAFE_INTEGER, whichever is smaller | The maximum numeric value allowed for input.<hr/>If a function is supplied, the function will receive all the number parts as an array parameter when being called.
-minValue | int<hr/>function | 0 | The minimum numeric value allowed for input.<hr/>If a function is supplied, the function will receive all the number parts as an array parameter when being called.
+maxValue | int<hr/>function | 10^length - 1 or Number.MAX_SAFE_INTEGER, whichever is smaller | The maximum numeric value allowed for input.<hr/>If a function is supplied, the function will receive all the NumberParts as an array parameter when being called.
+minValue | int<hr/>function | 0 | The minimum numeric value allowed for input.<hr/>If a function is supplied, the function will receive all the NumberParts as an array parameter when being called.
 prefix | string | "" | The prefix to the numeric input.
 postfix | string | "" | The postfix to the numeric input.
 snapToStep | bool | false | If true, setting the numeric value will snap it to the closest "step". If the numeric value is greater than the "maxValue", then the numeric value will overflow to the "minValue" and vice-versa.
 step | int | 1 | The numeric unit to increase/decrease the numeric value.
-toString | function | | Function that returns the formatted numeric input including the "prefix" and "postfix".
-totalLength | function | | Function that returns the total length of the numeric value including the "prefix" and "postfix".
-value | string | "" | The numeric value. If the value is less digits than "length", the display value will be prepadded with 0's to equal the specified length. For example, if the length is 4 and the value is "12", then the display value will be "0012"<br/><br/>NOTE: For initial display, all NumberPart values must be supplied, otherwise, the NumberEntry display value will default to empty.
+toString | function | | Function that returns the formatted NumberPart including the "prefix" and "postfix".
+totalLength | function | | Function that returns the total length of the NumberPart including the "prefix" and "postfix".
+value | string | "" | The numeric value. If the value is less digits than "length", the display value will be prepadded with 0's to equal the specified length. For example, if the length is 4 and the value is "12", then the display value will be "0012"<br/><br/>NOTE: For initial display, all NumberPart values must be supplied, otherwise, the NumberEntry default display value will default to empty.
 <!--<table>
   <tr>
     <th>Name</th>
