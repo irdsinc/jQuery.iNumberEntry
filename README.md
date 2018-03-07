@@ -157,7 +157,7 @@ The first parameter is the format. The supported formats are as follows:
 You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
 #### iDateIsoNumberEntry
 ```javascript
-$("#iDateIsoNumberEntry").iDateIsoNumberEntry(format, [NumberEntry]);
+$("#iDateIsoNumberEntry").iDateIsoNumberEntry([NumberEntry]);
 ```
 By default, this will display in the format yyyy-mm-dd. You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
 #### iTimeNumberEntry
