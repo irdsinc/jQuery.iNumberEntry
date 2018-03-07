@@ -1,5 +1,5 @@
 ﻿/*!
- * jQuery iNumberEntry Plugin v1.0.0 (https://github.com/irdsinc/jQuery.iNumberEntry)
+ * jQuery iNumberEntry Plugin v1.0.1 (https://github.com/irdsinc/jQuery.iNumberEntry)
  * Copyright IRDS, Inc. - http://irdsinc.com
  * License: MIT (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -16,7 +16,7 @@
             self.length = options.length;
             self.maxValue = options.maxValue || /*options.length
                 ? */Math.min(Number.MAX_SAFE_INTEGER, Math.pow(10, options.length) - 1)
-        	/*: Number.MAX_SAFE_INTEGER*/;
+            /*: Number.MAX_SAFE_INTEGER*/;
             self.minValue = options.minValue || 0;//Number.MIN_SAFE_INTEGER;
             //self.padStart = options.padStart || true;
             self.prefix = options.prefix || "";
@@ -56,7 +56,7 @@
 
                 return length;
             };
-        	/*self.totalValueLength = function () {
+            /*self.totalValueLength = function () {
         		var length = 0;
 
         		for (var i = 0; i < self.numberParts.length; i++) {
@@ -88,6 +88,7 @@
             var self = this;
 
             self.$element.attr("autocomplete", "off");
+            self.$element.attr("maxlength", self.totalLength());
 
             self.$element.on({
                 "blur.iNumberEntry": $.proxy(self.eventBlur, self),
@@ -192,6 +193,7 @@
                 $input.setSelectionRange(0, 0);
 
                 self._highlightedPart = null;
+                self._originalValue = null;
                 self.updateFromElementValue();
             }, 100);
         },
@@ -265,6 +267,19 @@
             }
 
             switch (e.which) {
+                case 8:
+                case 46:
+                    setTimeout(function () {
+                        var $input = self.$element.get(0);
+
+                        $input.setSelectionRange(0, 0);
+
+                        self._highlightedPart = null;
+                        self._originalValue = null;
+                        self.updateFromElementValue();
+                    }, 100);
+
+                    break;
                 case 9: // tab
                     self.updateFromElementValue();
 
@@ -313,9 +328,16 @@
                 case 38: // up arrow
                     e.preventDefault();
 
-                    self.increaseValue();
-                    self.update();
-                    self.highlightPart(self._highlightedPart);
+                    if (!self._originalValue || self._originalValue === "") {
+                        self.updateFromElementValue();
+                        self.eventHighlightPart();
+
+                        self._originalValue = self.$element.val();
+                    } else {
+                        self.increaseValue();
+                        self.update();
+                        self.highlightPart(self._highlightedPart);
+                    }
 
                     break;
                 case 39: // right arrow
@@ -335,9 +357,16 @@
                 case 40: // down arrow
                     e.preventDefault();
 
-                    self.decreaseValue();
-                    self.update();
-                    self.highlightPart(self._highlightedPart);
+                    if (!self._originalValue || self._originalValue === "") {
+                        self.updateFromElementValue();
+                        self.eventHighlightPart();
+
+                        self._originalValue = self.$element.val();
+                    } else {
+                        self.decreaseValue();
+                        self.update();
+                        self.highlightPart(self._highlightedPart);
+                    }
 
                     break;
             }
@@ -575,6 +604,14 @@
                     "parts": parts
                 }
             });
+
+            self.$element.trigger({
+                "type": "iNumberEntryChange",
+                "value": {
+                    "displayValue": displayValue,
+                    "parts": parts
+                }
+            });
         },
         updateElement: function () {
             var self = this,
@@ -665,21 +702,104 @@
 
                 if (part.indexOf("m") >= 0) {
                     defaults.numberParts.push({
-                        length: 2,//part.length,
+                        length: 2,
                         maxValue: 12,
                         minValue: 1,
                         postfix: i + 1 < formatArray.length ? "/" : ""
                     });
                 } else if (part.indexOf("d") >= 0) {
                     defaults.numberParts.push({
-                        length: 2,//part.length,
+                        length: 2,
                         maxValue: getMaxDaysInMonth,
                         minValue: 1,
                         postfix: i + 1 < formatArray.length ? "/" : ""
                     });
                 } else if (part.indexOf("y") >= 0) {
                     defaults.numberParts.push({
-                        length: part.length,
+                        length: part.length > 2 ? 4 : 2,
+                        minValue: 1
+                    });
+                }
+            }
+        }
+
+        $(this).iNumberEntry($.extend(true, {}, defaults, options));
+    };
+
+    $.fn.iDateIsoNumberEntry = function (format, options) {
+        var defaults = {
+            linked: true,
+            numberParts: []
+        };
+
+        function isLeapYear(year) {
+            return !((year % 4) || (!(year % 100) && year % 400));
+        }
+
+        function getDaysInMonthYear(month, year) {
+            return new Date(year, month, 0).getDate(); // Month is 1-based due to min/max values
+        }
+
+        function getDaysInMonth(month) {
+            var year = (new Date()).getFullYear(),
+                days = getDaysInMonthYear(month, year),
+                daysToAdd = month === 2 && !isLeapYear(year) ? 1 : 0; // For February in case current year is not a leap year
+
+            return days + daysToAdd;
+        }
+
+        function getMaxDaysInMonth(parts) {
+            var days;
+
+            if (parts.length === 3) {
+                days = getDaysInMonthYear(parseInt(parts[0].value, 10), parseInt(parts[2].value, 10));
+            } else {
+                days = getDaysInMonth(parseInt(parts[0].value, 10));
+            }
+
+            return isNaN(days) ? 31 : days;
+        }
+
+        if (!format) {
+            defaults.numberParts.push({
+                length: 4,
+                minValue: 1,
+                postfix: "-"
+            });
+            defaults.numberParts.push({
+                length: 2,
+                maxValue: 12,
+                minValue: 1,
+                postfix: "-"
+            });
+            defaults.numberParts.push({
+                length: 2,
+                maxValue: getMaxDaysInMonth,
+                minValue: 1
+            });
+        } else {
+            var formatArray = format.toLowerCase().split("-");
+
+            for (var i = 0; i < formatArray.length; i++) {
+                var part = formatArray[i];
+
+                if (part.indexOf("y") >= 0) {
+                    defaults.numberParts.push({
+                        length: part.length > 2 ? 4 : 2,
+                        minValue: 1,
+                        postfix: i + 1 < formatArray.length ? "-" : ""
+                    });
+                } else if (part.indexOf("m") >= 0) {
+                    defaults.numberParts.push({
+                        length: 2,
+                        maxValue: 12,
+                        minValue: 1,
+                        postfix: i + 1 < formatArray.length ? "-" : ""
+                    });
+                } else if (part.indexOf("d") >= 0) {
+                    defaults.numberParts.push({
+                        length: 2,
+                        maxValue: getMaxDaysInMonth,
                         minValue: 1
                     });
                 }
@@ -764,20 +884,20 @@
 
                 if (part.indexOf("h") >= 0) {
                     defaults.numberParts.push({
-                        length: 2,//part.length,
+                        length: 2,
                         maxValue: 23,
                         postfix: i + 1 < formatArray.length ? ":" : ""
                     });
                 } else if (part.indexOf("m") >= 0) {
                     defaults.numberParts.push({
-                        length: 2,//part.length,
+                        length: 2,
                         maxValue: 59,
                         postfix: i + 1 < formatArray.length ? ":" : "",
                         step: 15
                     });
                 } else if (part.indexOf("s") >= 0) {
                     defaults.numberParts.push({
-                        length: 2,//part.length,
+                        length: 2,
                         maxValue: 59,
                         step: 15
                     });
@@ -788,7 +908,7 @@
         $(this).iNumberEntry($.extend(true, {}, defaults, options));
     };
 
-	/*$.fn.iDecimalNumberEntry = function(decimalPlaces, options) {
+    /*$.fn.iDecimalNumberEntry = function(decimalPlaces, options) {
 	    $(this).iNumberEntry($.extend(true, {},
 	        {
 	            numberParts: [
