@@ -604,14 +604,6 @@
                     "parts": parts
                 }
             });
-
-            self.$element.trigger({
-                "type": "iNumberEntryChange",
-                "value": {
-                    "displayValue": displayValue,
-                    "parts": parts
-                }
-            });
         },
         updateElement: function () {
             var self = this,
