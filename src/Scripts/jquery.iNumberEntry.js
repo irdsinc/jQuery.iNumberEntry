@@ -726,12 +726,7 @@
         $(this).iNumberEntry($.extend(true, {}, defaults, options));
     };
 
-    $.fn.iDateIsoNumberEntry = function (format, options) {
-        var defaults = {
-            linked: true,
-            numberParts: []
-        };
-
+    $.fn.iDateIsoNumberEntry = function (options) {
         function isLeapYear(year) {
             return !((year % 4) || (!(year % 100) && year % 400));
         }
@@ -760,53 +755,29 @@
             return isNaN(days) ? 31 : days;
         }
 
-        if (!format) {
-            defaults.numberParts.push({
-                length: 4,
-                minValue: 1,
-                postfix: "-"
-            });
-            defaults.numberParts.push({
-                length: 2,
-                maxValue: 12,
-                minValue: 1,
-                postfix: "-"
-            });
-            defaults.numberParts.push({
-                length: 2,
-                maxValue: getMaxDaysInMonth,
-                minValue: 1
-            });
-        } else {
-            var formatArray = format.toLowerCase().split("-");
-
-            for (var i = 0; i < formatArray.length; i++) {
-                var part = formatArray[i];
-
-                if (part.indexOf("y") >= 0) {
-                    defaults.numberParts.push({
-                        length: part.length > 2 ? 4 : 2,
+        $(this).iNumberEntry($.extend(true, {},
+            {
+                linked: true,
+                numberParts: [
+                    {
+                        length: 4,
                         minValue: 1,
-                        postfix: i + 1 < formatArray.length ? "-" : ""
-                    });
-                } else if (part.indexOf("m") >= 0) {
-                    defaults.numberParts.push({
+                        postfix: "-"
+                    },
+                    {
                         length: 2,
                         maxValue: 12,
                         minValue: 1,
-                        postfix: i + 1 < formatArray.length ? "-" : ""
-                    });
-                } else if (part.indexOf("d") >= 0) {
-                    defaults.numberParts.push({
+                        postfix: "-"
+                    },
+                    {
                         length: 2,
                         maxValue: getMaxDaysInMonth,
                         minValue: 1
-                    });
-                }
-            }
-        }
-
-        $(this).iNumberEntry($.extend(true, {}, defaults, options));
+                    }
+                ]
+            },
+            options));
     };
 
     $.fn.iPhoneNumberEntry = function (options) {
