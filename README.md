@@ -155,6 +155,11 @@ The first parameter is the format. The supported formats are as follows:
 - mm/dd/yyyy
 
 You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
+#### iDateIsoNumberEntry
+```javascript
+$("#iDateIsoNumberEntry").iDateIsoNumberEntry(format, [NumberEntry]);
+```
+By default, this will display in the format yyyy-mm-dd. You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
 #### iTimeNumberEntry
 ```javascript
 $("#iTimeNumberEntry").iTimeNumberEntry(format, [NumberEntry]);
@@ -171,6 +176,7 @@ $("#iSocialSecurityNumberEntry").iSocialSecurityNumberEntry([NumberEntry]);
 ```
 By default, this will display in the format 123-45-6789. You can supply additional options as well in the second parameter, same as above for iPhoneNumberEntry.
 ## Events
+#### change.iNumberEntry
 ```javascript
 $("#iNumberEntry").iNumberEntry().on("change.iNumberEntry", function(e) {
   console.log("The display value is " + e.value.displayValue);
